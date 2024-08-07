@@ -3,6 +3,8 @@
    Clone and enter the directory:
    git clone https://github.com/vasilmanavski/challenge.git
 
+   Remove .idea if you are not using Intellij - it will be redundant.
+
 3. **Backend Setup (Nest js)**
     - Navigate to the backend directory:
       ```
