@@ -1,30 +1,39 @@
 import React from 'react';
-import '../css/add-task.css'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 
 interface Props {
-    handleSubmit: (id: string) => void;
-    toggleIsAddTaskOpen: void;
-
+  handleSubmit: (id: string) => void;
+  toggleIsAddTaskOpen: () => void;
 }
 
-const AddTask: React.FC<Props> = ({handleSubmit, toggleIsAddTaskOpen}) => {
-
-    return (
-        <div className="overlay">
-            <div className="task-form">
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        id={'title'}
-                        placeholder="title"
-                        required
-                    />
-                    <button type="submit">Add Task</button>
-                    <button className="close-button" onClick={toggleIsAddTaskOpen}>Exit</button>
-                </form>
-            </div>
-        </div>
-    );
+const AddTask: React.FC<Props> = ({ handleSubmit, toggleIsAddTaskOpen }) => {
+  return (
+    <Dialog open={true} onClose={toggleIsAddTaskOpen}>
+      <DialogTitle>Add New Task</DialogTitle>
+      <form onSubmit={handleSubmit}>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin='dense'
+            id='title'
+            label='Task Title'
+            type='text'
+            fullWidth
+            variant='outlined'
+            required
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={toggleIsAddTaskOpen} color='primary'>
+            Exit
+          </Button>
+          <Button type='submit' color='primary'>
+            Add Task
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
 };
 
 export default AddTask;

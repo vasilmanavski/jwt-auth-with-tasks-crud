@@ -59,7 +59,7 @@ export class AuthController {
 
       return {};
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Register error:', error);
 
       throw new HttpException(error, HttpStatus.CONFLICT);
     }

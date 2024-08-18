@@ -1,6 +1,5 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { login } from '../service/auth';
+import React, { useContext, useState } from 'react';
+import { register } from '../service/auth';
 import { UserCredentialsDto } from 'src/types/types';
 import { useNavigate } from 'react-router';
 import { TaskContext } from '../context/TaskContext';
@@ -8,19 +7,25 @@ import Cookies from 'js-cookie';
 import { AuthContext } from '../context/AuthContext';
 import { fetchUserInfo } from '../service/user';
 import ErrorMessages from '../components/ErrorMessages';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const navigate = useNavigate();
   const { addError, setErrors, errors } = useContext(TaskContext);
   const { setIsAuthenticated, setUser } = useContext(AuthContext);
-
   const [email, setEmail] = useState('');
+  const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    return login({ username: email, password } as UserCredentialsDto)
+    if (email !== confirmEmail) {
+      addError(new Error('Provided emails do not match'));
+      return;
+    }
+
+    return register({ username: email, password } as UserCredentialsDto)
       .then(() => {
 
         Cookies.set('username', email, { expires: 7, secure: false, sameSite: 'Strict' });
@@ -34,10 +39,10 @@ const Login: React.FC = () => {
         navigate('/home');
       })
       .catch(() => {
-        addError(new Error('User with provided credentials doesnt exists'));
+        addError(new Error('User with provided credentials already exists'));
       });
 
-  }, [addError, email, navigate, password, setErrors, setIsAuthenticated, setUser]);
+  };
 
   return (
     <Box
@@ -47,10 +52,10 @@ const Login: React.FC = () => {
       justifyContent='center'
       p={2}
     >
-      {errors.length > 0 && <ErrorMessages />}
       <Typography variant='h4' gutterBottom>
-        Login
+        Registration
       </Typography>
+      {errors.length > 0 && <ErrorMessages />}
       <Box
         component='form'
         onSubmit={handleSubmit}
@@ -66,7 +71,7 @@ const Login: React.FC = () => {
         <TextField
           fullWidth
           variant='outlined'
-          margin='normal'
+          margin='dense'
           id='email'
           label='Email'
           type='email'
@@ -77,7 +82,18 @@ const Login: React.FC = () => {
         <TextField
           fullWidth
           variant='outlined'
-          margin='normal'
+          margin='dense'
+          id='confirm-email'
+          label='Confirm Email'
+          type='email'
+          value={confirmEmail}
+          onChange={(e) => setConfirmEmail(e.target.value)}
+          required
+        />
+        <TextField
+          fullWidth
+          variant='outlined'
+          margin='dense'
           id='password'
           label='Password'
           type='password'
@@ -92,11 +108,11 @@ const Login: React.FC = () => {
           type='submit'
           sx={{ mt: 2 }}
         >
-          Login
+          Register
         </Button>
       </Box>
     </Box>
   );
 };
 
-export default Login;
+export default Register;
