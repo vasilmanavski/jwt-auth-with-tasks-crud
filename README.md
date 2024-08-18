@@ -1,7 +1,7 @@
 ### Setup Steps
 1. **Clone the Repository**
    Clone and enter the directory:
-   git clone https://github.com/vasilmanavski/challenge.git
+   git clone https://github.com/vasilmanavski/jwt-auth-with-tasks-crud.git
 
    Remove .idea if you are not using Intellij - it will be redundant.
 
