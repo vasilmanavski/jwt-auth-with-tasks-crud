@@ -1,7 +1,9 @@
-import {Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Req, Res} from '@nestjs/common';
+import { Response } from 'express';
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { AuthDto } from 'src/modules/auth/dto/AuthDto';
 import { UserService } from 'src/modules/user/user.service';
+import type { AuthResponse, UserInfo } from 'src/modules/auth/types';
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +14,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Body() signInUserDto: AuthDto, @Res({ passthrough: true }) res) {
+  async login(@Body() signInUserDto: AuthDto, @Res({ passthrough: true }) res: Response): Promise<AuthResponse> {
     const user = await this.authService.validateUser(signInUserDto);
 
     if (user == null) throw new HttpException('User doesnt exists', HttpStatus.CONFLICT);
@@ -23,7 +25,7 @@ export class AuthController {
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: false,
-        sameSite: 'Strict',
+        sameSite: 'strict',
         expires: new Date(Date.now() + 3600000),
       });
 
@@ -37,7 +39,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  async register(@Body() registerUserDto: AuthDto, @Res({ passthrough: true }) res) {
+  async register(@Body() registerUserDto: AuthDto, @Res({ passthrough: true }) res: Response): Promise<AuthResponse> {
     const existingUser = await this.userService.findOneByUsername(registerUserDto.username);
 
     if (existingUser != null) {
@@ -51,7 +53,7 @@ export class AuthController {
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: false,
-        sameSite: 'Strict',
+        sameSite: 'strict',
         expires: new Date(Date.now() + 3600000),
       });
 
@@ -65,11 +67,18 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  async logout(@Body() registerUserDto: AuthDto, @Res({ passthrough: true }) res) {
-    res.cookie('accessToken', {
+  async logout(@Body() registerUserDto: AuthDto, @Res({ passthrough: true }) res: Response): Promise<AuthResponse> {
+    // todo - try to remove both token and username instead of setting them to empty strings
+    res.cookie('accessToken', '', {
       httpOnly: true,
       secure: false,
-      sameSite: 'Strict',
+      sameSite: 'strict',
+      expires: new Date(0),
+    });
+
+    res.cookie('username', '', {
+      secure: false,
+      sameSite: 'strict',
       expires: new Date(0),
     });
 
@@ -78,14 +87,14 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Get('user-info/:email')
-  async getUserInfo(@Param('email') email: string, @Res({ passthrough: true }) res) {
-
+  async getUserInfo(@Param('email') email: string): Promise<UserInfo> {
     const existingUser = await this.userService.findOneByUsername(email);
 
     if (existingUser == null) {
       throw new HttpException('User doesnt exist', HttpStatus.CONFLICT);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = existingUser;
 
     return userWithoutPassword;

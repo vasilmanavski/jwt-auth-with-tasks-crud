@@ -1,0 +1,46 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "ignorePatterns": [
+    "dist",
+    "vite.config.ts"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "react-hooks",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "warn",
+    "prefer-arrow-callback": "warn",
+    "prefer-const": "warn",
+    "react/self-closing-comp": "warn",
+    "react/jsx-curly-brace-presence": "warn",
+    "react/jsx-no-useless-fragment": "warn",
+    "react/jsx-boolean-value": "warn",
+    "arrow-body-style": [
+      "warn",
+      "as-needed"
+    ],
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "prettier/prettier": "warn"
+  }
+}
