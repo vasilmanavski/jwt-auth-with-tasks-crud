@@ -1,13 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Box, Button, CircularProgress, Container, Grid, Typography } from '@mui/material';
 import { addTask, deleteTask, getTasks } from '../service/task';
-import { Task } from '../types/types';
 import { TaskContext } from '../context/TaskContext';
 import TaskItem from '../components/task/TaskItem';
 import AddTask from '../components/task/AddTask';
-import { useNavigate } from 'react-router';
-import { AuthContext } from '../context/AuthContext';
+import Calendar from '../components/Calendar';
 import ErrorMessages from '../components/ErrorMessages';
-import { Box, Button, CircularProgress, Container, Grid, Typography } from '@mui/material';
+import { AuthContext } from '../context/AuthContext';
+import { Task } from '../types/types';
 
 const Home: React.FC = () => {
   const { isLoading, setIsLoading, addError } = useContext(TaskContext);
@@ -45,8 +46,10 @@ const Home: React.FC = () => {
     event.preventDefault();
 
     const title = event.target.title.value as string;
+    const start = event.target.start.value as Date;
+    const end = event.target.end.value as Date;
 
-    const taskDto = { title, userId: user?.id };
+    const taskDto = { title, userId: user?.id, start, end };
     addTask(taskDto)
       .then(addedTask => {
         setTasks([...tasks, addedTask]);
@@ -89,6 +92,19 @@ const Home: React.FC = () => {
         </Typography>
       </Box>
 
+      <Box textAlign='center' mt={4}>
+        <Calendar tasks={tasks} setTasks={setTasks} />
+
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={toggleIsAddTaskOpen}
+          sx={{ mb: 3 }}
+        >
+          Add new task
+        </Button>
+      </Box>
+
       <Grid container spacing={2}>
         {tasks.length > 0 ? (
           tasks.map((task) => (
@@ -112,17 +128,6 @@ const Home: React.FC = () => {
           </Grid>
         )}
       </Grid>
-
-      <Box textAlign='center' mt={4}>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={toggleIsAddTaskOpen}
-          sx={{ mb: 3 }}
-        >
-          Add new task
-        </Button>
-      </Box>
 
       {isAddTaskOpen && (
         <Box mb={4}>

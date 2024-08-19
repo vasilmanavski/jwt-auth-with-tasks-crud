@@ -1,5 +1,6 @@
 export class TaskDto {
-    title: string;
-
-    userId: number;
+  title: string;
+  start: Date;
+  end: Date;
+  userId: number;
 }

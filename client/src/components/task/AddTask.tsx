@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { TaskDto } from 'src/types/types';
 
 interface Props {
-  handleSubmit: (id: string) => void;
+  handleSubmit: (data: TaskDto) => void;
   toggleIsAddTaskOpen: () => void;
 }
 
@@ -21,6 +22,28 @@ const AddTask: React.FC<Props> = ({ handleSubmit, toggleIsAddTaskOpen }) => {
             fullWidth
             variant='outlined'
             required
+          />
+          <TextField
+            margin='dense'
+            id='start'
+            label='Start Time'
+            type='datetime-local'
+            fullWidth
+            variant='outlined'
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            margin='dense'
+            id='end'
+            label='End Time'
+            type='datetime-local'
+            fullWidth
+            variant='outlined'
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
         </DialogContent>
         <DialogActions>

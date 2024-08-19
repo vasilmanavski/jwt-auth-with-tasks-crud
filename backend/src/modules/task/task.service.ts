@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from 'src/modules/task/entity/task';
 import { User } from 'src/modules/user/entity/user';
-import {TaskDto} from "src/modules/task/dto/task.dto";
+import { TaskDto } from 'src/modules/task/dto/task.dto';
 
 @Injectable()
 export class TaskService {
@@ -14,7 +14,7 @@ export class TaskService {
     private userRepository: Repository<User>,
   ) {}
 
-  async findTasksByUserId(email: string): Promise<Task[]> {
+  async findTasksByUserEmail(email: string): Promise<Task[]> {
     const user = await this.userRepository.findOne({
       where: { email },
       relations: ['tasks'],
@@ -32,13 +32,15 @@ export class TaskService {
   }
 
   async add(taskDto: TaskDto): Promise<Task> {
-    const user = await this.userRepository.findOne({ where: { id: taskDto.userId } });
+    const { title, start, end, userId } = taskDto;
 
-    if (!user) {
+    const foundUser = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!foundUser) {
       throw new Error('User not found when adding task');
     }
 
-    const task = new Task(taskDto.title, user);
+    const task = new Task(title, foundUser, start, end);
 
     return this.taskRepository.save(task);
   }
