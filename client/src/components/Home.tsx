@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Box, Button, CircularProgress, Container, Grid, Typography } from '@mui/material';
-import { addTask, deleteTask, getTasks } from '../service/task';
+import { Box, Button, CircularProgress, Container } from '@mui/material';
+import { addTask, getTasks } from '../service/task';
 import { TaskContext } from '../context/TaskContext';
-import TaskItem from '../components/task/TaskItem';
 import AddTask from '../components/task/AddTask';
 import Calendar from '../components/Calendar';
 import ErrorMessages from '../components/ErrorMessages';
@@ -27,7 +26,7 @@ const Home: React.FC = () => {
     setIsLoading(true);
     getTasks(user?.email)
       .then(fetchedTasks => {
-        console.log(fetchedTasks);
+
         setTasks(fetchedTasks);
       })
       .catch(error => {
@@ -61,16 +60,6 @@ const Home: React.FC = () => {
     toggleIsAddTaskOpen();
   }, [addError, tasks, toggleIsAddTaskOpen, user?.id]);
 
-  const handleDeleteTask = useCallback((id: number) => {
-    deleteTask(id)
-      .then(() => {
-        setTasks(tasks.filter(task => task.id !== id));
-      })
-      .catch(error => {
-        addError(new Error(error.message));
-      });
-  }, [addError, tasks]);
-
   if (isLoading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' height='100vh'>
@@ -87,12 +76,6 @@ const Home: React.FC = () => {
   return (
     <Container maxWidth='md'>
       <Box textAlign='center' mt={4}>
-        <Typography variant='h4' gutterBottom>
-          Welcome to the Home Page!
-        </Typography>
-      </Box>
-
-      <Box textAlign='center' mt={4}>
         <Calendar tasks={tasks} setTasks={setTasks} />
 
         <Button
@@ -104,30 +87,6 @@ const Home: React.FC = () => {
           Add new task
         </Button>
       </Box>
-
-      <Grid container spacing={2}>
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <Grid item xs={12} key={task.id}>
-              <TaskItem task={task} onDelete={handleDeleteTask} />
-            </Grid>
-          ))
-        ) : (
-          <Grid item xs={12}>
-            <Box
-              display='flex'
-              justifyContent='center'
-              alignItems='center'
-              height='100%'
-              minHeight='200px'
-            >
-              <Typography variant='h6' align='center' color='textSecondary'>
-                No tasks available.
-              </Typography>
-            </Box>
-          </Grid>
-        )}
-      </Grid>
 
       {isAddTaskOpen && (
         <Box mb={4}>

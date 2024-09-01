@@ -5,7 +5,7 @@ import { User } from 'src/modules/user/entity/user';
 import { UsersModule } from 'src/modules/user/user.module';
 import { TasksModule } from 'src/modules/task/task.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
-import {dbConfig} from "src/db.config";
+import { dbConfig } from 'src/db.config';
 
 @Module({
   imports: [

@@ -35,9 +35,12 @@ const Header: React.FC = () => {
           Timeboxing App
         </Typography>
         <Box display='flex' alignItems='center'>
-          <Button color='inherit' component={Link} to='/home'>
-            Home
-          </Button>
+          {isAuthenticated && (
+
+            <Button color='inherit' component={Link} to='/home'>
+              Home
+            </Button>
+          )}
           {!isAuthenticated && (
             <Button color='inherit' component={Link} to='/login'>
               Login
